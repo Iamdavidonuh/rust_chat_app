@@ -1,6 +1,4 @@
-use chat_app::{
-    fetch_messages, match_command_or_message, send_message, SocketCommands, SocketMessageFormat,
-};
+use chat_app::{match_command_or_message, SocketMessageFormat};
 use serde_json::{self};
 use std::{
     net::TcpListener,
@@ -29,21 +27,7 @@ fn main() {
 
                     let command = match_command_or_message(&msg_json.command);
 
-                    match command {
-                        SocketCommands::FetchMessages => {
-                            fetch_messages(&mut websocket, &messages_db)
-                        }
-                        SocketCommands::NewMessage => match msg_json.message {
-                            Some(socket_msg) => {
-                                messages_db.lock().unwrap().push(socket_msg.clone());
-                                send_message(&mut websocket, socket_msg);
-                            }
-                            None => {
-                                continue;
-                            }
-                        },
-                        SocketCommands::Nothing => continue,
-                    };
+                    command.execute(&mut websocket, &messages_db, msg_json)
                 }
             }
         });
