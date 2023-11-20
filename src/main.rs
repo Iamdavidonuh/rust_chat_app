@@ -22,13 +22,10 @@ fn main() {
                 let message = websocket.read().unwrap();
                 // We do not want to send back ping/pong messages.
                 if message.is_text() {
-                    println!("Client sent: {}", &message);
-
                     let messsage_txt = message.clone().to_string();
                     // serialize
                     let msg_json: SocketMessageFormat =
                         serde_json::from_str(&messsage_txt).unwrap();
-                    println!("Client json: {:?}", &msg_json);
 
                     let command = match_command_or_message(&msg_json.command);
 
@@ -38,7 +35,6 @@ fn main() {
                         }
                         SocketCommands::NewMessage => match msg_json.message {
                             Some(socket_msg) => {
-                                println!("msg.... {}", &socket_msg);
                                 messages_db.lock().unwrap().push(socket_msg.clone());
                                 send_message(&mut websocket, socket_msg);
                             }
