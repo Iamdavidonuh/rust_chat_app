@@ -66,7 +66,6 @@ impl SocketCommands {
 }
 
 pub fn match_command_or_message(input: &str) -> SocketCommands {
-    println!("Command got, {}", input);
     match input {
         "fetch_messages" => SocketCommands::FetchMessages,
         "new_message" => SocketCommands::NewMessage,
